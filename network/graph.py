@@ -11,7 +11,7 @@ graphs_by_name = {
 }
 
 
-def line_graph(n=5):
+def path_graph(n=5):
     graph = nx.Graph()
     for i in range(1, n):
         graph.add_edge(i - 1, i)
