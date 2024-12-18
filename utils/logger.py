@@ -17,4 +17,4 @@ def log(text="", enabled=True, file_dir="logs", file_path="log"):
 
         plain_text = ANSI_COLOR_PATTERN.sub('', text)
         with open(file_path, "a") as log_file:
-            log_file.write(plain_text)
+            log_file.write(plain_text + "\n")
