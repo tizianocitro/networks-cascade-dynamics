@@ -31,7 +31,7 @@ def run_simulation():
     n = 20
     cost = 50
     log(text=f"Generating {n} seed sets from the graph partition given a cost of {cost}\n")
-    seed_sets = seed_sets_from_graph_partition_given_cost(graph, nodes_cost_dict=nodes_cost, cost=cost, n=n)
+    seed_sets = seed_sets_from_graph_permutation_given_cost(graph, nodes_cost_dict=nodes_cost, cost=cost, n=n)
 
     # the max heap will store the seed set cost and the seed set index
     # so, if we want the top 5 seed sets, we can pop 5 times from the heap
@@ -39,19 +39,20 @@ def run_simulation():
     for i, s in enumerate(seed_sets):
         log(text="\n---------------------------------------------\n")
         log(text=f"{RED}### START Seed set {i}: {s} START ###{RESET}\n")
-        s_cost = seed_set_cost(s, nodes_cost)
-        s_score = seed_set_score(s)
+        s_cost = seed_set_cost(s.seed_set, nodes_cost)
+        s_score = seed_set_score(s.seed_set)
 
         log(text=f"{YELLOW}Influencing nodes in the seed set {i} with initial cost {s_cost} and score {s_score}")
         print_seed_set(s)
         # start with a clean grap (without any influenced nodes)
         nodes_influenced = generate_nodes_influenced(graph.nodes)
         # influence the node in the seed set i
-        nodes_influenced = influence_nodes(s, nodes_influenced)
+        nodes_influenced = influence_nodes(s.seed_set, nodes_influenced)
         log(text=f"{RESET}Nodes influenced {i} at the start: {nodes_influenced}\n")
 
         # influence the nodes in the graph starting from the seed set i
-        s_influenced, t = threshold_influence_diffusion(graph, s, nodes_influenced, nodes_threshold)
+        s_influenced, t = threshold_influence_diffusion(graph, s.seed_set, nodes_influenced, nodes_threshold)
+        s.seed_set = s_influenced
 
         log(text=f"{YELLOW}Influenced seed set {i} in {t} steps:")
         print_seed_set(s_influenced)
@@ -68,7 +69,28 @@ def run_simulation():
         log(text="\n---------------------------------------------\n")
         log()
 
-    print(f"{GREEN}Top influencing seed sets:{RESET}")
-    while max_heap:
+    log(text="\n---------------------------------------------\n")
+    log(text=f"{RED}### Creating new population ###{RESET}\n")
+
+    top_50_len = len(max_heap) // 2
+    top_50_sets = set()
+    log(text=f"{GREEN}Top 50% ({top_50_len} sets) influencing seed sets:{RESET}")
+    for _ in range(top_50_len):
         score, i = heappop(max_heap)
-        log(text=f"- Seed set {i} with score {-score} -> {seed_sets[i]}")
+        log(text=f"- Seed set {i} with score {-score} -> current: {seed_sets[i].seed_set} | initial: {seed_sets[i].initial_seed_set}")
+        top_50_sets.add(seed_sets[i])
+
+    random_len = (n - top_50_len) // 2
+    random_sets = set()
+    while len(random_sets) < random_len:
+        random_set = seed_set_from_graph_permutation_given_cost(graph, nodes_cost_dict=nodes_cost, cost=cost)
+        if random_set in random_sets or random_set in top_50_sets:
+            continue
+        random_sets.add(random_set)
+
+    log(text=f"\n{GREEN}Random {random_len} influencing seed sets:{RESET}")
+    for i, s in enumerate(random_sets):
+        log(text=f"- Seed set {i} -> {s}")
+
+    log(text="\n---------------------------------------------\n")
+
