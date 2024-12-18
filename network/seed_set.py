@@ -1,4 +1,5 @@
 from random import sample
+from utils import log
 
 
 def random_seed_set(graph, size):
@@ -49,28 +50,39 @@ def seed_set_from_graph_partition_given_cost(graph, nodes_cost_dict, cost=0):
     return list(seed_set)
 
 
-def seed_sets_from_graph_partition_given_cost(graph, nodes_cost_dict, cost=0, n=1):
+def seed_sets_from_graph_partition_given_cost(graph, nodes_cost_dict, cost=0, n=1, with_print=False):
     seed_sets = set()
+
+    tries = n * 5
     while len(seed_sets) < n:
+        log(text=f"{tries} tries left to generate a seed set of cost {cost}", enabled=with_print)
+
+        if tries < 1:
+            log(text=f"No tries left to generate a seed set of cost {cost}, terminating the process", enabled=with_print)
+            raise ValueError("There is no partition to generate a seed set of the given cost")
+
         seed_set = seed_set_from_graph_partition_given_cost(graph, nodes_cost_dict, cost)
         seed_sets.add(tuple(seed_set))
+
+        tries -= 1
+
     return [list(seed_set) for seed_set in seed_sets]
 
 
 def seed_set_cost(seed_set, nodes_cost, with_print=False):
     if with_print:
-        print("Nodes cost:")
+        log(text="Nodes cost:", enabled=with_print)
         for node_id, _ in seed_set:
-            print(f"Node {node_id} has cost {nodes_cost[node_id]}")
+            log(text=f"Node {node_id} has cost {nodes_cost[node_id]}", enabled=with_print)
 
     return sum(nodes_cost[node_id] for node_id in seed_set)
 
 
 def seed_set_cost_with_data(seed_set, nodes_cost, with_print=False):
     if with_print:
-        print("Nodes cost:")
+        log(text="Nodes cost:", enabled=with_print)
         for node_id, _ in seed_set:
-            print(f"Node {node_id} has cost {nodes_cost[node_id]}")
+            log(text=f"Node {node_id} has cost {nodes_cost[node_id]}", enabled=with_print)
 
     return sum(nodes_cost[node_id] for node_id, _ in seed_set)
 
@@ -80,4 +92,4 @@ def seed_set_score(seed_set):
 
 
 def print_seed_set(seed_set):
-    print(f"Seed set\'s nodes: {seed_set} with size {len(seed_set)}")
+    log(text=f"Seed set\'s nodes: {seed_set} with size {len(seed_set)}")

@@ -1,6 +1,6 @@
 import networkx as nx
 from random import randint
-
+from utils import log
 
 graphs_by_name = {
     "karate_club_graph": nx.karate_club_graph(),
@@ -30,12 +30,12 @@ def print_all_graphs_statistics():
         num_edges = graph.number_of_edges()
         graph_density = nx.density(graph)
 
-        print(f"{name} statistics:")
-        print(f"Number of nodes: {num_nodes}")
-        print(f"Number of edges: {num_edges}")
-        print(f"Density: {graph_density:.4f}")
+        log(text=f"{name} statistics:")
+        log(text=f"Number of nodes: {num_nodes}")
+        log(text=f"Number of edges: {num_edges}")
+        log(text=f"Density: {graph_density:.4f}")
 
-        print()
+        log()
 
 
 def print_graph(graph, with_nodes=True, with_edges=False):
@@ -43,27 +43,27 @@ def print_graph(graph, with_nodes=True, with_edges=False):
         print_nodes(graph.nodes(data=True))
 
     if with_edges:
-        print("Edges:")
+        log(text="Edges:")
         for edge in graph.edges(data=True):
-            print(edge)
-        print()
+            log(text=edge)
+        log()
 
 
 def print_nodes(nodes):
-    print("Nodes:")
+    log(text="Nodes:")
     for node in nodes:
-        print(node)
-    print()
+        log(text=node)
+    log()
 
 
 def generate_nodes_threshold(nodes, min=1, max=100, with_print=False):
     nodes_threshold = {node: randint(min, max) for node in nodes}
 
     if with_print:
-        print("Nodes threshold:")
+        log(text="Nodes threshold:", enabled=with_print)
         for node in nodes:
-            print(f"Node {node} has threshold {nodes_threshold[node]}")
-        print()
+            log(text=f"Node {node} has threshold {nodes_threshold[node]}", enabled=with_print)
+        log(enabled=with_print)
 
     return nodes_threshold
 
@@ -72,10 +72,10 @@ def generate_nodes_threshold_with_node_degrees(graph, nodes, min=1, with_print=F
     nodes_threshold = {node: randint(min, graph.degree(node)) for node in nodes}
 
     if with_print:
-        print("Nodes threshold:")
+        log(text="Nodes threshold:", enabled=with_print)
         for node in nodes:
-            print(f"Node {node} has threshold {nodes_threshold[node]}")
-        print()
+            log(text=f"Node {node} has threshold {nodes_threshold[node]}", enabled=with_print)
+        log(enabled=with_print)
 
     return nodes_threshold
 
@@ -84,10 +84,10 @@ def generate_nodes_cost(nodes, min=1, max=100, with_print=False):
     nodes_cost = {node: randint(min, max) for node in nodes}
 
     if with_print:
-        print("Nodes cost:")
+        log(text="Nodes cost:", enabled=with_print)
         for node in nodes:
-            print(f"Node {node} has cost {nodes_cost[node]}")
-        print()
+            log(text=f"Node {node} has cost {nodes_cost[node]}", enabled=with_print)
+        log(enabled=with_print)
 
     return nodes_cost
 
