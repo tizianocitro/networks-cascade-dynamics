@@ -4,6 +4,10 @@ from heapq import *
 
 
 def run_experiment(exp_name="experiment"):
+    # set for logging file
+    os.environ["LOG_FILE_DIR"] = "logs"
+    os.environ["LOG_FILE_PATH"] = exp_name
+
     log(text=f"\n{BLUE}### STARTING EXPERIMENT {exp_name} ###{RESET}\n")
 
     run_simulation()
