@@ -50,7 +50,13 @@ def seed_set_from_graph_partition_given_cost(graph, nodes_cost_dict, cost=0):
     return list(seed_set)
 
 
-def seed_sets_from_graph_partition_given_cost(graph, nodes_cost_dict, cost=0, n=1, with_print=False):
+def seed_sets_from_graph_partition_given_cost(
+    graph,
+    nodes_cost_dict,
+    cost=0,
+    n=1,
+    with_print=False,
+):
     seed_sets = set()
 
     tries = n * 5

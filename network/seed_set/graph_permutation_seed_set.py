@@ -1,5 +1,6 @@
 from random import shuffle
 from utils import log
+from heapq import heappush, heappop
 
 
 class GraphPermutationSeedSet:
@@ -32,13 +33,13 @@ class GraphPermutationSeedSet:
         return f"GraphPermutationSeedSet(seed_set={self.seed_set})"
 
 
-def seed_set_from_graph_permutation_given_cost(graph, nodes_cost_dict, cost=0):
-    nodes = list(graph.nodes())
+def seed_set_from_graph_permutation_given_cost(nodes, nodes_cost_dict, cost=0):
+    nodes = list(nodes)
     nodes_cost = sum(nodes_cost_dict.values())
     if nodes_cost < cost:
         raise ValueError("The given cost is greater than the sum of the nodes\' costs")
     if nodes_cost == cost:
-        return list(graph.nodes())
+        return GraphPermutationSeedSet(nodes, nodes)
 
     # permute the nodes in the graph
     shuffle(nodes)
@@ -66,7 +67,13 @@ def seed_set_from_graph_permutation_given_cost(graph, nodes_cost_dict, cost=0):
     return GraphPermutationSeedSet(list(seed_set), nodes)
 
 
-def seed_sets_from_graph_permutation_given_cost(graph, nodes_cost_dict, cost=0, n=1, with_print=False):
+def seed_sets_from_graph_permutation_given_cost(
+    nodes,
+    nodes_cost_dict,
+    cost=0,
+    n=1,
+    with_print=False,
+):
     seed_sets = set()
 
     tries = n * 5
@@ -77,9 +84,28 @@ def seed_sets_from_graph_permutation_given_cost(graph, nodes_cost_dict, cost=0, 
             log(text=f"No tries left to generate a seed set of cost {cost}, terminating the process", enabled=with_print)
             raise ValueError("Could not generate a seed set of the given cost")
 
-        seed_set = seed_set_from_graph_permutation_given_cost(graph, nodes_cost_dict, cost)
+        seed_set = seed_set_from_graph_permutation_given_cost(nodes, nodes_cost_dict, cost)
         seed_sets.add(seed_set)
 
         tries -= 1
 
     return list(seed_sets)
+
+
+def position_combine_seed_sets(s1, s2, nodes_cost_dict, cost=0):
+    max_heap = []
+    s1_nodes_to_ixs = {node: ix for ix, node in enumerate(s1.permutation)}
+    s2_nodes_to_ixs = {node: ix for ix, node in enumerate(s2.permutation)}
+
+    for node in s1.permutation:
+        s1_ix = s1_nodes_to_ixs[node]
+        s2_ix = s2_nodes_to_ixs[node]
+        node_score = (s1_ix + s2_ix) // 2
+        heappush(max_heap, (-node_score, node))
+
+    combined_set = []
+    while max_heap:
+        _, node = heappop(max_heap)
+        combined_set.append(node)
+
+    return seed_set_from_graph_permutation_given_cost(combined_set, nodes_cost_dict, cost)

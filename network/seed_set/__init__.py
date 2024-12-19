@@ -13,4 +13,5 @@ from .graph_permutation_seed_set import (
     GraphPermutationSeedSet,
     seed_set_from_graph_permutation_given_cost,
     seed_sets_from_graph_permutation_given_cost,
+    position_combine_seed_sets,
 )
