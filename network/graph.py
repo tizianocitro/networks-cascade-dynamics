@@ -68,7 +68,12 @@ def generate_nodes_threshold(nodes, min=1, max=100, with_print=False):
     return nodes_threshold
 
 
-def generate_nodes_threshold_with_node_degrees(graph, nodes, min=1, with_print=False):
+def generate_nodes_threshold_with_node_degrees(
+    graph,
+    nodes,
+    min=1,
+    with_print=False,
+):
     nodes_threshold = {node: randint(min, graph.degree(node)) for node in nodes}
 
     if with_print:

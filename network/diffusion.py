@@ -1,4 +1,10 @@
-def threshold_influence_diffusion(graph, seed_set, nodes_influenced, nodes_threshold, with_print=False):
+def threshold_influence_diffusion(
+    graph,
+    seed_set,
+    nodes_influenced,
+    nodes_threshold,
+    with_print=False,
+):
     influence_set = set(seed_set)
     t = 0
 
