@@ -7,7 +7,7 @@ graphs_by_name = {
     "davis_southern_women_graph": nx.davis_southern_women_graph(),
     "florentine_families_graph": nx.florentine_families_graph(),
     "les_miserables_graph": nx.les_miserables_graph(),
-    "erdos_renyi_graph": nx.erdos_renyi_graph(100, 0.1),
+    "erdos_renyi_graph": nx.erdos_renyi_graph(1000, 0.5),
 }
 
 
@@ -103,4 +103,5 @@ def generate_nodes_influenced(nodes):
 
 def get_max_degree(graph):
     degrees = [degree for _, degree in graph.degree()]
+    log(text=f"format of degrees {graph.degree()}")
     return max(degrees) if degrees else 0

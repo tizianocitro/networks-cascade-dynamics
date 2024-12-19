@@ -11,7 +11,10 @@ from .base_set import (
 
 from .graph_permutation_seed_set import (
     GraphPermutationSeedSet,
+    seed_set_from_degree_ordered_graph_given_cost,
+    seed_sets_from_degree_ordered_graph_given_cost,
     seed_set_from_graph_permutation_given_cost,
     seed_sets_from_graph_permutation_given_cost,
+    permutation_position_combine_seed_sets,
     position_combine_seed_sets,
 )
