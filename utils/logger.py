@@ -4,6 +4,7 @@ import os
 ANSI_COLOR_PATTERN = re.compile(r'\033\[[0-9;]*m')
 
 def log(text="", enabled=True, file_dir="logs", file_path="log"):
+    enabled = os.getenv("LOG_ENABLED", enabled)
     if enabled:
         print(text)
 

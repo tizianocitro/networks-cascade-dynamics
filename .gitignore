@@ -3,3 +3,4 @@ __pycache__
 .vscode
 network.*
 logs/
+.DS_Store
