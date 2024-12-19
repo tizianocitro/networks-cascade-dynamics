@@ -2,6 +2,7 @@ import networkx as nx
 from random import randint
 from utils import log
 
+# more graphs can be added from here: https://snap.stanford.edu/data/
 graphs_by_name = {
     "karate_club_graph": nx.karate_club_graph(),
     "davis_southern_women_graph": nx.davis_southern_women_graph(),
