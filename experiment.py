@@ -44,7 +44,7 @@ def run_simulation():
 
         log(text=f"{YELLOW}Influencing nodes in the seed set {i} with initial cost {s_cost} and score {s_score}")
         print_seed_set(s)
-        # start with a clean grap (without any influenced nodes)
+        # start with a clean graph (without any influenced nodes)
         nodes_influenced = generate_nodes_influenced(graph.nodes)
         # influence the node in the seed set i
         nodes_influenced = influence_nodes(s.seed_set, nodes_influenced)
@@ -72,6 +72,7 @@ def run_simulation():
     log(text="\n---------------------------------------------\n")
     log(text=f"{RED}### Creating new population ###{RESET}\n")
 
+    log(text=f"{RED}### Creating top 50% sets ###{RESET}\n")
     top_50_len = len(max_heap) // 2
     top_50_sets = set()
     log(text=f"{GREEN}Top 50% ({top_50_len} sets) influencing seed sets:{RESET}")
@@ -80,6 +81,7 @@ def run_simulation():
         log(text=f"- Seed set {i} with score {-score} -> current: {seed_sets[i].seed_set} | initial: {seed_sets[i].initial_seed_set}")
         top_50_sets.add(seed_sets[i])
 
+    log(text=f"\n{RED}### Creating random sets ###{RESET}")
     random_len = (n - top_50_len) // 2
     random_sets = set()
     while len(random_sets) < random_len:
@@ -88,9 +90,9 @@ def run_simulation():
             continue
         random_sets.add(random_set)
 
-    log(text=f"\n{GREEN}Random {random_len} influencing seed sets:{RESET}")
+    log(text=f"\n{GREEN}Random ({random_len} sets) influencing seed sets:{RESET}")
     for i, s in enumerate(random_sets):
-        log(text=f"- Seed set {i} -> {s}")
+        log(text=f"- Seed set {i} -> {s.seed_set}")
 
     log(text="\n---------------------------------------------\n")
 
