@@ -33,7 +33,13 @@ class GraphPermutationSeedSet:
         return f"GraphPermutationSeedSet(seed_set={self.seed_set})"
 
 
-def seed_set_from_degree_ordered_graph_given_cost(nodes, degrees, nodes_cost_dict, cost=0, exclude_ixs=None):
+def seed_set_from_ordered_graph_given_cost(
+    nodes,
+    nodes_cost_dict,
+    key_func,
+    cost=0,
+    exclude_ixs=None,
+):
     nodes = list(nodes)
     nodes_cost = sum(nodes_cost_dict.values())
     if nodes_cost < cost:
@@ -41,9 +47,7 @@ def seed_set_from_degree_ordered_graph_given_cost(nodes, degrees, nodes_cost_dic
     if nodes_cost == cost:
         return GraphPermutationSeedSet(nodes, nodes)
 
-    # order node in the graph by their degree decreasingly
-    nodes.sort(key=lambda node: degrees[node], reverse=True)
-
+    nodes.sort(key=key_func, reverse=True)
     seed_set = set()
     seed_set_cost = 0
 
@@ -97,13 +101,14 @@ def seed_sets_from_degree_ordered_graph_given_cost(
                 log(text=f"- Generated seed set: {seed_set.seed_set}", enabled=with_print)
             raise ValueError("Could not generate a seed set of the given cost")
 
-        seed_set, excluded_ixs = seed_set_from_degree_ordered_graph_given_cost(
+        seed_set, excluded_ixs = seed_set_from_ordered_graph_given_cost(
             nodes=nodes,
-            degrees=degrees,
             nodes_cost_dict=nodes_cost_dict,
+            key_func=lambda node: degrees[node],
             cost=cost,
             exclude_ixs=exclude_ixs,
         )
+
         seed_sets.add(seed_set)
         exclude_ixs.extend(excluded_ixs)
 
@@ -242,7 +247,13 @@ def permutation_position_combine_seed_sets(s1, s2, degrees=None, exclude_ixs=Non
     if generation_opt == 1:
         return seed_set_from_graph_permutation_given_cost(combined_set, nodes_cost_dict, cost)
     elif generation_opt == 2:
-        return seed_set_from_degree_ordered_graph_given_cost(combined_set, degrees, nodes_cost_dict, cost, exclude_ixs)
+        return seed_set_from_ordered_graph_given_cost(
+            combined_set,
+            nodes_cost_dict,
+            key_func=lambda node: degrees[node],
+            cost=cost,
+            exclude_ixs=exclude_ixs,
+        )
 
 
 def position_combine_permutation(s1, s2):

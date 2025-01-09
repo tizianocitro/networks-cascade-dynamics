@@ -8,7 +8,7 @@ graphs_by_name = {
     "davis_southern_women_graph": nx.davis_southern_women_graph(),
     "florentine_families_graph": nx.florentine_families_graph(),
     "les_miserables_graph": nx.les_miserables_graph(),
-    "erdos_renyi_graph": nx.erdos_renyi_graph(1000, 0.5),
+    "erdos_renyi_graph": nx.erdos_renyi_graph(1000, 0.6),
 }
 
 
