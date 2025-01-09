@@ -16,7 +16,7 @@ class GeneticSimulation:
     def run(self, graph_name="karate_club_graph"):
         graph = graphs_by_name[graph_name]
         max_degree = get_max_degree(graph)
-        log(text=f"Using graph {graph_name} with max degree {max_degree}\n")
+        log(text=f"\nUsing graph {graph_name} with max degree {max_degree}\n")
         # print_graph(graph, with_nodes=True, with_edges=False)
 
         nodes_threshold = generate_nodes_threshold_with_node_degrees(graph, graph.nodes)
@@ -53,6 +53,7 @@ class GeneticSimulation:
         log(text=f"\n{GREEN}### Epoch scores ###{RESET}\n")
         for epoch, score in epoch_scores.items():
             log(text=f"Epoch {epoch} score: {score}")
+        log()
 
         return seed_sets, max_score, epoch_scores
 

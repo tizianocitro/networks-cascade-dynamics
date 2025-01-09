@@ -13,7 +13,7 @@ class DegreeSimulation:
     def run(self, graph_name="karate_club_graph"):
         graph = graphs_by_name[graph_name]
         max_degree = get_max_degree(graph)
-        log(text=f"Using graph {graph_name} with max degree {max_degree}\n")
+        log(text=f"\nUsing graph {graph_name} with max degree {max_degree}\n")
         # print_graph(graph, with_nodes=True, with_edges=False)
 
         nodes_threshold = generate_nodes_threshold_with_node_degrees(graph, graph.nodes)
@@ -37,8 +37,8 @@ class DegreeSimulation:
         log(text=f"\n{GREEN}### Final degree seed set ###{RESET}\n")
         log(text=f"- {epoch_sets[0].seed_set}")
 
-        log(text=f"\n{GREEN}### Max score ###{RESET}\n")
-        log(text=f"Max score: {epoch_score}\n")
+        # log(text=f"\n{GREEN}### Max score ###{RESET}\n")
+        # log(text=f"Max score: {epoch_score}\n")
 
         return seed_set, epoch_score
 
@@ -100,13 +100,13 @@ class DegreeCostSimulation:
     def run(self, graph_name="karate_club_graph"):
         graph = graphs_by_name[graph_name]
         max_degree = get_max_degree(graph)
-        log(text=f"Using graph {graph_name} with max degree {max_degree}\n")
+        log(text=f"\nUsing graph {graph_name} with max degree {max_degree}\n")
         # print_graph(graph, with_nodes=True, with_edges=False)
 
         nodes_threshold = generate_nodes_threshold_with_node_degrees(graph, graph.nodes)
         nodes_cost = generate_nodes_cost(graph.nodes)
 
-        log(text=f"Generating seed sets from cost ordered graph given a cost of {self.cost}\n")
+        log(text=f"Generating seed sets from (degree/cost) ordered graph given a cost of {self.cost}\n")
         seed_set, _ = seed_set_from_ordered_graph_given_cost(
             nodes=graph.nodes,
             nodes_cost_dict=nodes_cost,
@@ -124,8 +124,8 @@ class DegreeCostSimulation:
         log(text=f"\n{GREEN}### Final degree seed set ###{RESET}\n")
         log(text=f"- {epoch_sets[0].seed_set}")
 
-        log(text=f"\n{GREEN}### Max score ###{RESET}\n")
-        log(text=f"Max score: {epoch_score}\n")
+        # log(text=f"\n{GREEN}### Max score ###{RESET}\n")
+        # log(text=f"Max score: {epoch_score}\n")
 
         return seed_set, epoch_score
 
