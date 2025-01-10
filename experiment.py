@@ -10,23 +10,30 @@ from degree_simulation import DegreeSimulation, DegreeCostSimulation
 def run_experiment(exp_name="experiment", epochs=10, graph_name="karate_club_graph", cost=0, n=20):
     results = {}
 
+    print_graph_statistics(graph_name=graph_name)
+
     log(text=f"\n{BLUE}### STARTING EXPERIMENT {exp_name} ###{RESET}\n")
 
     genetic_sim = GeneticSimulation(name="Genetic", cost=cost, n=n, epochs=epochs)
-    _, _, epoch_scores = genetic_sim.run(graph_name)
+    _, genetic_score, epoch_scores = genetic_sim.run(graph_name)
     results[genetic_sim.name] = (epoch_scores, LINE_BLUE)
 
     degree_sim = DegreeSimulation(name="Degree", cost=cost)
-    _, max_score = degree_sim.run(graph_name)
-    epoch_scores = {epoch: max_score for epoch in range(epochs)}
+    _, degree_score = degree_sim.run(graph_name)
+    epoch_scores = {epoch: degree_score for epoch in range(epochs)}
     results[degree_sim.name] = (epoch_scores, LINE_RED)
 
     degree_cost_sim = DegreeCostSimulation(name="Degree/Cost", cost=cost)
-    _, max_score = degree_cost_sim.run(graph_name)
-    epoch_scores = {epoch: max_score for epoch in range(epochs)}
+    _, degree_cost_score = degree_cost_sim.run(graph_name)
+    epoch_scores = {epoch: degree_cost_score for epoch in range(epochs)}
     results[degree_cost_sim.name] = (epoch_scores, LINE_GREEN)
 
-    save_results(exp_name, results)
+    log(text=f"\n{GREEN}### FINAL RESULTS ###{RESET}\n")
+    log(text=f"Genetic score: {genetic_score}")
+    log(text=f"Degree score: {degree_score}")
+    log(text=f"Degree/Cost score: {degree_cost_score}")
+
+    save_results(exp_name, graph_name, results)
 
     log(text=f"\n{BLUE}### ENDING EXPERIMENT {exp_name} ###{RESET}\n")
 
@@ -56,7 +63,7 @@ def save_result(seed_sets, max_score, epoch_scores, exp_name):
     plt.savefig(output_filename, dpi=300, bbox_inches="tight")
 
 
-def save_results(exp_name, simulation_results):
+def save_results(exp_name, graph_name, simulation_results):
     """
     Save results and plot epoch scores for multiple experiments.
 
@@ -72,12 +79,13 @@ def save_results(exp_name, simulation_results):
     epochs = list(first_exp_epoch_scores.keys())
 
     plt.figure(figsize=(8, 5))
-    plt.title("Score in Each Epoch", fontsize=15)
+    plt.title(f"Score per Epoch", fontsize=12)
+    plt.suptitle(f"Used graph: {graph_name}", fontsize=8)
 
-    plt.xlabel("Epoch", fontsize=13)
+    plt.xlabel("Epoch", fontsize=10)
     plt.xticks(epochs, rotation=90, ha="right", fontsize=9)
 
-    plt.ylabel("Score", fontsize=13)
+    plt.ylabel("Score", fontsize=10)
     plt.yticks(fontsize=10)
 
     for sim_name, (epoch_scores, color) in simulation_results.items():
