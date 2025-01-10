@@ -3,6 +3,8 @@ from .graph import (
     path_graph,
     networkx_graph_by_name,
     print_all_graphs_statistics,
+    print_graph_statistics,
+    display_graph,
     print_graph,
     print_nodes,
     generate_nodes_threshold,

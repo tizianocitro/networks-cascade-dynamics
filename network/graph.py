@@ -1,15 +1,7 @@
 import networkx as nx
+from matplotlib import pyplot as plt
 from random import randint
-from utils import log
-
-# more graphs can be added from here: https://snap.stanford.edu/data/
-graphs_by_name = {
-    "karate_club_graph": nx.karate_club_graph(),
-    "davis_southern_women_graph": nx.davis_southern_women_graph(),
-    "florentine_families_graph": nx.florentine_families_graph(),
-    "les_miserables_graph": nx.les_miserables_graph(),
-    "erdos_renyi_graph": nx.erdos_renyi_graph(1000, 0.6),
-}
+from utils import log, join_with_parent_dir
 
 
 def path_graph(n=5):
@@ -37,6 +29,28 @@ def print_all_graphs_statistics():
         log(text=f"Density: {graph_density:.4f}")
 
         log()
+
+
+def print_graph_statistics(graph_name):
+    graph = graphs_by_name[graph_name]
+    num_nodes = graph.number_of_nodes()
+    num_edges = graph.number_of_edges()
+    graph_density = nx.density(graph)
+
+    log(text=f"{graph_name} statistics:")
+    log(text=f"Number of nodes: {num_nodes}")
+    log(text=f"Number of edges: {num_edges}")
+    log(text=f"Density: {graph_density:.4f}")
+
+    log()
+
+
+def display_graph(graph, graph_name):
+    plt.figure(figsize=(12, 8))
+    pos = nx.spring_layout(graph, seed=42)
+    nx.draw(graph, pos, node_size=20, node_color="blue", edge_color="gray", with_labels=False, alpha=0.7)
+    plt.title(graph_name, fontsize=15)
+    plt.show()
 
 
 def print_graph(graph, with_nodes=True, with_edges=False):
@@ -104,5 +118,45 @@ def generate_nodes_influenced(nodes):
 
 def get_max_degree(graph):
     degrees = [degree for _, degree in graph.degree()]
-    log(text=f"format of degrees {graph.degree()}")
+    # log(text=f"format of degrees {graph.degree()}")
     return max(degrees) if degrees else 0
+
+
+def email_eu_core_graph():
+    path = join_with_parent_dir("data", "email-eu-core.txt")
+    return nx.read_edgelist(path)
+
+
+def email_eu_core_departments_graph():
+    path = join_with_parent_dir("data", "email-eu-core-departments.txt")
+    return nx.read_edgelist(path)
+
+
+def email_enron_graph():
+    path = join_with_parent_dir("data", "email-enron.txt")
+    return nx.read_edgelist(path)
+
+
+def cit_hepth_graph():
+    path = join_with_parent_dir("data", "cit-hepth.txt")
+    G = nx.DiGraph()
+    with open(path, "r") as f:
+        for line in f:
+            if line.startswith("#"):
+                continue
+            node1, node2 = map(int, line.split())
+            G.add_edge(node1, node2)
+    return G
+
+
+graphs_by_name = {
+    "erdos_renyi_graph": nx.erdos_renyi_graph(1000, 0.6),
+    "karate_club_graph": nx.karate_club_graph(),
+    "davis_southern_women_graph": nx.davis_southern_women_graph(),
+    "florentine_families_graph": nx.florentine_families_graph(),
+    "les_miserables_graph": nx.les_miserables_graph(),
+    "email_eu_core_graph": email_eu_core_graph(),
+    "email_eu_core_departments_graph": email_eu_core_departments_graph(),
+    "cit_hepth_graph": cit_hepth_graph(),
+    "email_enron_graph": email_enron_graph(),
+}
