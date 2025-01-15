@@ -4,3 +4,4 @@ __pycache__
 network.*
 logs/
 .DS_Store
+results/
