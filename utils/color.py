@@ -7,3 +7,5 @@ RESET = '\033[0m'
 LINE_BLUE = "b"
 LINE_RED = "r"
 LINE_GREEN = "g"
+LINE_YELLOW = "y"
+LINE_PURPLE = "m"
