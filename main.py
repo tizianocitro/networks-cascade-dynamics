@@ -1,16 +1,19 @@
 from experiment import run_experiment
-import argparse
+from argparse import ArgumentParser
 import os
 
 
 def setup(exp_name="experiment"):
     # set for logging file
+    os.environ["LOG_FILE_ENABLED"] = "True"
     os.environ["LOG_FILE_DIR"] = "logs"
     os.environ["LOG_FILE_PATH"] = exp_name
 
+    os.environ["LOG_CONSOLE_ENABLED"] = "False"
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run experiments.")
+    parser = ArgumentParser(description="Run experiments.")
     parser.add_argument("-g", "--graph_name", type=str, default="erdos_renyi_graph", help="Graph name")
     parser.add_argument("-c", "--cost", type=int, default=500, help="Cost value")
     parser.add_argument("-n", "--set_size", type=int, default=20, help="Size of seed set")
