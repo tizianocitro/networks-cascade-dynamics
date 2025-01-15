@@ -1,6 +1,6 @@
-from random import shuffle
-from utils import log
+from random import shuffle, uniform
 from heapq import heappush, heappop
+from utils import log
 
 
 class GraphPermutationSeedSet:
@@ -77,6 +77,135 @@ def seed_set_from_ordered_graph_given_cost(
         ix += 1
 
     return GraphPermutationSeedSet(list(seed_set), nodes), excluded_ixs
+
+
+def seed_set_from_degree_graph_given_cost(
+    nodes,
+    nodes_cost_dict,
+    degrees,
+    cost=0,
+    a_range=None,
+    with_print=False,
+):
+    a = uniform(a_range[0], a_range[1])
+    log(text=f"Generating seed set from degree graph given a cost of {cost} and a={a}", enabled=with_print)
+
+    graph_permutation_seed_set, _ = seed_set_from_ordered_graph_given_cost(
+        nodes=nodes,
+        nodes_cost_dict=nodes_cost_dict,
+        key_func=lambda node: (degrees[node] * a),
+        cost=cost,
+    )
+
+    return graph_permutation_seed_set
+
+
+def seed_sets_from_degree_graph_given_cost(
+    nodes,
+    nodes_cost_dict,
+    degrees,
+    cost=0,
+    n=1,
+    a_range=None,
+    with_print=False,
+):
+    seed_sets = set()
+
+    tries = n * 5
+    while len(seed_sets) < n:
+        log(text=f"{tries} tries left to generate a seed set of cost {cost}", enabled=with_print)
+
+        if tries < 1:
+            log(text=f"No tries left to generate a seed set of cost {cost}, terminating the process", enabled=with_print)
+            raise ValueError("Could not generate a seed set of the given cost")
+
+        graph_permutation_seed_set = seed_set_from_degree_graph_given_cost(
+            nodes=nodes,
+            nodes_cost_dict=nodes_cost_dict,
+            degrees=degrees,
+            cost=cost,
+            a_range=a_range,
+            with_print=with_print,
+        )
+
+        seed_sets.add(graph_permutation_seed_set)
+        log(text=f"lenght of seed sets: {len(seed_sets)}", enabled=with_print)
+
+        tries -= 1
+
+    return list(seed_sets)
+
+
+def seed_set_from_degreecost_graph_given_cost(
+    nodes,
+    nodes_cost_dict,
+    degrees,
+    cost=0,
+    a_range=None,
+    b_range=None,
+    ab_total=False,
+):
+    a = uniform(a_range[0], a_range[1])
+    b = uniform(b_range[0], b_range[1])
+
+    # most of the times, including the the degree / cost
+    # without influencing the result value, improves performance
+    if ab_total:
+        a = b = 1
+
+    graph_permutation_seed_set, _ = seed_set_from_ordered_graph_given_cost(
+        nodes=nodes,
+        nodes_cost_dict=nodes_cost_dict,
+        key_func=lambda node: ((degrees[node] * a) // (nodes_cost_dict[node] * b)),
+        cost=cost,
+    )
+
+    return graph_permutation_seed_set
+
+
+def seed_sets_from_degreecost_graph_given_cost(
+    nodes,
+    nodes_cost_dict,
+    degrees,
+    cost=0,
+    n=1,
+    a_range=None,
+    b_range=None,
+    with_first_total=True,
+    with_print=False,
+):
+    seed_sets = set()
+
+    ix = 0
+
+    tries = n * 5
+    while len(seed_sets) < n:
+        a = uniform(a_range[0], a_range[1])
+        b = uniform(b_range[0], b_range[1])
+
+        log(text=f"{tries} tries left to generate a seed set of cost {cost} with a={a} and b={b}", enabled=with_print)
+
+        if tries < 1:
+            log(text=f"No tries left to generate a seed set of cost {cost}, terminating the process", enabled=with_print)
+            raise ValueError(f"Could not generate a seed set of the given cost, max is {len(seed_sets)}")
+
+        graph_permutation_seed_set = seed_set_from_degreecost_graph_given_cost(
+            nodes=nodes,
+            nodes_cost_dict=nodes_cost_dict,
+            degrees=degrees,
+            cost=cost,
+            a_range=a_range,
+            b_range=b_range,
+            ab_total= with_first_total and ix == 0,
+        )
+
+        seed_sets.add(graph_permutation_seed_set)
+        log(text=f"lenght of seed sets: {len(seed_sets)}", enabled=with_print)
+
+        tries -= 1
+        ix += 1
+
+    return list(seed_sets)
 
 
 def seed_sets_from_degree_ordered_graph_given_cost(
@@ -176,31 +305,6 @@ def seed_sets_from_graph_permutation_given_cost(
     return list(seed_sets)
 
 
-def seed_sets_from_graph_permutation_given_cost(
-    nodes,
-    nodes_cost_dict,
-    cost=0,
-    n=1,
-    with_print=False,
-):
-    seed_sets = set()
-
-    tries = n * 5
-    while len(seed_sets) < n:
-        log(text=f"{tries} tries left to generate a seed set of cost {cost}", enabled=with_print)
-
-        if tries < 1:
-            log(text=f"No tries left to generate a seed set of cost {cost}, terminating the process", enabled=with_print)
-            raise ValueError("Could not generate a seed set of the given cost")
-
-        seed_set = seed_set_from_graph_permutation_given_cost(nodes, nodes_cost_dict, cost)
-        seed_sets.add(seed_set)
-
-        tries -= 1
-
-    return list(seed_sets)
-
-
 def position_combine_seed_sets(s1, s2):
     max_heap = []
     s1_nodes_to_ixs = {node: ix for ix, node in enumerate(s1.seed_set)}
@@ -228,7 +332,17 @@ def position_combine_seed_sets(s1, s2):
     return GraphPermutationSeedSet(combined_set, position_combine_permutation(s1, s2))
 
 
-def permutation_position_combine_seed_sets(s1, s2, degrees=None, exclude_ixs=None, nodes_cost_dict=None, cost=0, generation_opt=1):
+def permutation_position_combine_seed_sets(
+    s1,
+    s2,
+    degrees=None,
+    exclude_ixs=None,
+    nodes_cost_dict=None,
+    a_range=None,
+    b_range=None,
+    cost=0,
+    generation_opt=1,
+):
     max_heap = []
     s1_nodes_to_ixs = {node: ix for ix, node in enumerate(s1.permutation)}
     s2_nodes_to_ixs = {node: ix for ix, node in enumerate(s2.permutation)}
@@ -253,6 +367,15 @@ def permutation_position_combine_seed_sets(s1, s2, degrees=None, exclude_ixs=Non
             key_func=lambda node: degrees[node],
             cost=cost,
             exclude_ixs=exclude_ixs,
+        )
+    elif generation_opt == 3:
+        return seed_set_from_degreecost_graph_given_cost(
+            combined_set,
+            nodes_cost_dict,
+            degrees=degrees,
+            cost=cost,
+            a_range=a_range,
+            b_range=b_range,
         )
 
 

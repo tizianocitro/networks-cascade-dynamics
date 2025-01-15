@@ -1,7 +1,13 @@
 import networkx as nx
 from matplotlib import pyplot as plt
 from random import randint
-from utils import log, join_with_parent_dir
+from utils import (
+    BLUE,
+    RESET,
+    log,
+    log_important,
+    join_with_parent_dir
+)
 
 
 def path_graph(n=5):
@@ -37,12 +43,12 @@ def print_graph_statistics(graph_name):
     num_edges = graph.number_of_edges()
     graph_density = nx.density(graph)
 
-    log(text=f"{graph_name} statistics:")
-    log(text=f"Number of nodes: {num_nodes}")
-    log(text=f"Number of edges: {num_edges}")
-    log(text=f"Density: {graph_density:.4f}")
+    log_important(text=f"{BLUE}Graph \"{graph_name}\" Statistics{RESET}")
+    log_important(text=f"- Number of nodes: {num_nodes}")
+    log_important(text=f"- Number of edges: {num_edges}")
+    log_important(text=f"- Density: {graph_density:.4f}")
 
-    log()
+    log_important()
 
 
 def display_graph(graph, graph_name):
