@@ -38,7 +38,6 @@ def seed_set_from_ordered_graph_given_cost(
     nodes_cost_dict,
     key_func,
     cost=0,
-    exclude_ixs=None,
 ):
     nodes = list(nodes)
     nodes_cost = sum(nodes_cost_dict.values())
@@ -52,18 +51,12 @@ def seed_set_from_ordered_graph_given_cost(
     seed_set_cost = 0
 
     ix = 0
-    exclude_ixs = exclude_ixs if exclude_ixs else []
-    excluded_ixs = []
 
     # while we have nodes to sample and the seed set cost is less than the given cost
     while seed_set_cost < cost and ix < len(nodes):
-        log(text=f"Processing node at ix: {ix}, exclude_ixs: {exclude_ixs}", enabled=False)
-        if ix in exclude_ixs:
-            ix += 1
-            continue
-
         sample_node = nodes[ix]
         sample_node_cost = nodes_cost_dict[sample_node]
+        log(text=f"Processing node at ix: {ix} -> (node={sample_node}, cost={sample_node_cost})", enabled=False)
 
         seed_set_with_sample_cost = seed_set_cost + sample_node_cost
 
@@ -72,11 +65,10 @@ def seed_set_from_ordered_graph_given_cost(
         if sample_node not in seed_set and seed_set_with_sample_cost <= cost:
             seed_set.add(sample_node)
             seed_set_cost += nodes_cost_dict[sample_node]
-            excluded_ixs.append(ix)
 
         ix += 1
 
-    return GraphPermutationSeedSet(list(seed_set), nodes), excluded_ixs
+    return GraphPermutationSeedSet(list(seed_set), nodes), ix
 
 
 def seed_set_from_degree_graph_given_cost(
@@ -111,13 +103,13 @@ def seed_sets_from_degree_graph_given_cost(
 ):
     seed_sets = set()
 
-    tries = n * 5
+    tries = n * 1_000_000
     while len(seed_sets) < n:
         log(text=f"{tries} tries left to generate a seed set of cost {cost}", enabled=with_print)
 
         if tries < 1:
             log(text=f"No tries left to generate a seed set of cost {cost}, terminating the process", enabled=with_print)
-            raise ValueError("Could not generate a seed set of the given cost")
+            raise ValueError("Could not generate a seed set of the given cost using degree/cost")
 
         graph_permutation_seed_set = seed_set_from_degree_graph_given_cost(
             nodes=nodes,
@@ -178,7 +170,7 @@ def seed_sets_from_degreecost_graph_given_cost(
 
     ix = 0
 
-    tries = n * 5
+    tries = n * 1_000_000
     while len(seed_sets) < n:
         a = uniform(a_range[0], a_range[1])
         b = uniform(b_range[0], b_range[1])
@@ -219,7 +211,7 @@ def seed_sets_from_degree_ordered_graph_given_cost(
     seed_sets = set()
 
     exclude_ixs = []
-    tries = n * 5
+    tries = n * 1_000_000
     while len(seed_sets) < n:
         log(text=f"{tries} tries left to generate a seed set of cost {cost}", enabled=with_print)
 
@@ -289,7 +281,7 @@ def seed_sets_from_graph_permutation_given_cost(
 ):
     seed_sets = set()
 
-    tries = n * 5
+    tries = n * 1_000_000
     while len(seed_sets) < n:
         log(text=f"{tries} tries left to generate a seed set of cost {cost}", enabled=with_print)
 
@@ -376,6 +368,14 @@ def permutation_position_combine_seed_sets(
             cost=cost,
             a_range=a_range,
             b_range=b_range,
+        )
+    elif generation_opt == 4:
+        return seed_set_from_degree_graph_given_cost(
+            combined_set,
+            nodes_cost_dict,
+            degrees=degrees,
+            cost=cost,
+            a_range=a_range,
         )
 
 
