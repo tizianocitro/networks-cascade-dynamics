@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from network import *
 from utils import *
 from heapq import *
@@ -6,26 +7,30 @@ from heapq import *
 class GeneticSimulation:
 
 
-    def __init__(self, name="Genetic", cost=0, n=20, epochs=10):
+    def __init__(
+        self,
+        name="Genetic",
+        cost=0,
+        n=20,
+        epochs=10,
+        nodes_threshold: Dict[Any, int]=None,
+        nodes_cost: Dict[Any, int]=None,
+    ):
         self.name = name
         self.cost = cost
         self.n = n
         self.epochs = epochs
+        self.nodes_threshold = nodes_threshold
+        self.nodes_cost = nodes_cost
 
 
     def run(self, graph_name="karate_club_graph"):
         graph = graphs_by_name[graph_name]
-        max_degree = get_max_degree(graph)
-        log(text=f"\nUsing graph {graph_name} with max degree {max_degree}\n")
-        # print_graph(graph, with_nodes=True, with_edges=False)
-
-        nodes_threshold = generate_nodes_threshold_with_node_degrees(graph, graph.nodes)
-        nodes_cost = generate_nodes_cost(graph.nodes)
 
         log(text=f"Generating {self.n} seed sets from the graph partition given a cost of {self.cost}\n")
         seed_sets = seed_sets_from_graph_permutation_given_cost(
             nodes=graph.nodes,
-            nodes_cost_dict=nodes_cost,
+            nodes_cost_dict=self.nodes_cost,
             cost=self.cost,
             n=self.n,
         )
@@ -37,8 +42,8 @@ class GeneticSimulation:
             epoch_sets, epoch_score = self.run_epoch(
                 graph=graph,
                 seed_sets=seed_sets,
-                nodes_cost=nodes_cost,
-                nodes_threshold=nodes_threshold,
+                nodes_cost=self.nodes_cost,
+                nodes_threshold=self.nodes_threshold,
             )
             seed_sets = epoch_sets
             max_score = max(max_score, epoch_score)

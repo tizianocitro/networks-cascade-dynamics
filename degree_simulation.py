@@ -1,28 +1,30 @@
+from typing import Any, Dict
 from network import *
 from utils import *
-
 
 class DegreeSimulation:
 
 
-    def __init__(self, name="Degree", cost=0):
+    def __init__(
+        self,
+        name="Degree",
+        cost=0,
+        nodes_threshold: Dict[Any, int]=None,
+        nodes_cost: Dict[Any, int]=None,
+    ):
         self.name = name
         self.cost = cost
+        self.nodes_threshold = nodes_threshold
+        self.nodes_cost = nodes_cost
 
 
     def run(self, graph_name="karate_club_graph"):
         graph = graphs_by_name[graph_name]
-        max_degree = get_max_degree(graph)
-        log(text=f"\nUsing graph {graph_name} with max degree {max_degree}\n")
-        # print_graph(graph, with_nodes=True, with_edges=False)
-
-        nodes_threshold = generate_nodes_threshold_with_node_degrees(graph, graph.nodes)
-        nodes_cost = generate_nodes_cost(graph.nodes)
 
         log(text=f"Generating seed sets from cost ordered graph given a cost of {self.cost}\n")
         seed_set, _ = seed_set_from_ordered_graph_given_cost(
             nodes=graph.nodes,
-            nodes_cost_dict=nodes_cost,
+            nodes_cost_dict=self.nodes_cost,
             key_func=lambda node: graph.degree()[node],
             cost=self.cost,
         )
@@ -30,8 +32,8 @@ class DegreeSimulation:
         epoch_sets, epoch_score = self.run_epoch(
             graph=graph,
             seed_sets=[seed_set], # only one seed set in this case
-            nodes_cost=nodes_cost,
-            nodes_threshold=nodes_threshold,
+            nodes_cost=self.nodes_cost,
+            nodes_threshold=self.nodes_threshold,
         )
 
         log(text=f"\n{GREEN}### Final degree seed set ###{RESET}\n")
@@ -92,33 +94,35 @@ class DegreeSimulation:
 class DegreeCostSimulation:
 
 
-    def __init__(self, name="Degree/Cost", cost=0):
+    def __init__(
+        self,
+        name="Degree/Cost",
+        cost=0,
+        nodes_threshold: Dict[Any, int]=None,
+        nodes_cost: Dict[Any, int]=None,
+    ):
         self.name = name
         self.cost = cost
+        self.nodes_threshold = nodes_threshold
+        self.nodes_cost = nodes_cost
 
 
     def run(self, graph_name="karate_club_graph"):
         graph = graphs_by_name[graph_name]
-        max_degree = get_max_degree(graph)
-        log(text=f"\nUsing graph {graph_name} with max degree {max_degree}\n")
-        # print_graph(graph, with_nodes=True, with_edges=False)
-
-        nodes_threshold = generate_nodes_threshold_with_node_degrees(graph, graph.nodes)
-        nodes_cost = generate_nodes_cost(graph.nodes)
 
         log(text=f"Generating seed sets from (degree/cost) ordered graph given a cost of {self.cost}\n")
         seed_set, _ = seed_set_from_ordered_graph_given_cost(
             nodes=graph.nodes,
-            nodes_cost_dict=nodes_cost,
-            key_func=lambda node: (graph.degree()[node] // nodes_cost[node]),
+            nodes_cost_dict=self.nodes_cost,
+            key_func=lambda node: (graph.degree()[node] // self.nodes_cost[node]),
             cost=self.cost,
         )
 
         epoch_sets, epoch_score = self.run_epoch(
             graph=graph,
             seed_sets=[seed_set], # only one seed set in this case
-            nodes_cost=nodes_cost,
-            nodes_threshold=nodes_threshold,
+            nodes_cost=self.nodes_cost,
+            nodes_threshold=self.nodes_threshold,
         )
 
         log(text=f"\n{GREEN}### Final degree seed set ###{RESET}\n")
