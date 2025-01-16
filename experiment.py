@@ -4,9 +4,9 @@ from utils import *
 from heapq import *
 import matplotlib.pyplot as plt
 from datetime import datetime
-from genetic_simulation import GeneticSimulation
-from degree_simulation import DegreeSimulation, DegreeCostSimulation
-from genetic_degree_simulation import GeneticDegreeSimulation, GeneticDegreeCostSimulation
+from simulation import GeneticSimulation
+from simulation import DegreeSimulation, DegreeCostSimulation
+from simulation import GeneticDegreeSimulation, GeneticDegreeCostSimulation
 
 
 def run_experiment(
@@ -17,26 +17,24 @@ def run_experiment(
     n=20,
     options: Dict[Any, Any]=None,
 ):
-    do_genetic_degree = load_options(options)
+    """
+    Run experiment with multiple simulations.
+
+    Args:
+        exp_name (str): Name of the experiment.
+        epochs (int): Number of epochs.
+        graph_name (str): Name of the graph.
+        cost (int): Cost of the nodes.
+        n (int): Number of nodes.
+        options (dict): Dictionary with options.
+    """
+    do_genetic_degree, do_genetic_degree_cost_no_first_total = load_options(options)
 
     results = {}
 
     log_important(text=f"\n{BLUE}### STARTING EXPERIMENT {exp_name} ###{RESET}")
 
     nodes_threshold, nodes_cost = setup_graph(graph_name)
-
-    log_important(text=f"\n{YELLOW}### STARTING GENETIC ###{RESET}")
-    genetic_sim = GeneticSimulation(
-        name="Genetic",
-        cost=cost,
-        n=n,
-        epochs=epochs,
-        nodes_threshold=nodes_threshold,
-        nodes_cost=nodes_cost,
-    )
-    _, genetic_score, epoch_scores = genetic_sim.run(graph_name)
-    results[genetic_sim.name] = (epoch_scores, LINE_BLUE)
-    log_important(text=f"Genetic score: {genetic_score}")
 
     if do_genetic_degree:
         log_important(text=f"\n{YELLOW}### STARTING GENETIC DEGREE ###{RESET}")
@@ -74,27 +72,44 @@ def run_experiment(
         except Exception as e:
             log_important(text=f"Retrying Genetic Degree/Cost because of \"{e}\"")
 
-    log_important(text=f"\n{YELLOW}### STARTING GENETIC DEGREE/COST NO FIRST TOTAL ###{RESET}")
-    try:
-        genetic_degree_cost_no_total_sim = GeneticDegreeCostSimulation(
-            name="Genetic Degree/Cost",
-            cost=cost,
-            n=n,
-            epochs=epochs,
-            a_range=[0.1, 1],
-            b_range=[0.1, 1],
-            nodes_threshold=nodes_threshold,
-            nodes_cost=nodes_cost,
-            with_first_total=False,
-        )
-        _, genetic_degree_cost_no_total_score, epoch_scores = genetic_degree_cost_no_total_sim.run(graph_name)
-        log_important(text=f"Genetic Degree/Cost No First Total score: {genetic_degree_cost_no_total_score}")
-        if genetic_degree_cost_no_total_score > genetic_degree_cost_score:
-            log_important(text=f"Genetic Degree/Cost No First Total score performed better")
-            genetic_degree_cost_score = genetic_degree_cost_no_total_score
-            results[genetic_degree_cost_sim.name] = (epoch_scores, LINE_PURPLE)
-    except Exception as e:
-        log_important(text=f"Skipping Genetic Degree/Cost No First Total because of \"{e}\"")
+    if do_genetic_degree_cost_no_first_total:
+        log_important(text=f"\n{YELLOW}### STARTING GENETIC DEGREE/COST NO FIRST TOTAL ###{RESET}")
+        while True:
+            try:
+                genetic_degree_cost_no_total_sim = GeneticDegreeCostSimulation(
+                    name="Genetic Degree/Cost No First Total",
+                    cost=cost,
+                    n=n,
+                    epochs=epochs,
+                    a_range=[0.1, 1],
+                    b_range=[0.1, 1],
+                    nodes_threshold=nodes_threshold,
+                    nodes_cost=nodes_cost,
+                    with_first_total=False,
+                )
+                _, genetic_degree_cost_no_total_score, epoch_scores = genetic_degree_cost_no_total_sim.run(graph_name)
+                log_important(text=f"Genetic Degree/Cost No First Total score: {genetic_degree_cost_no_total_score}")
+                if genetic_degree_cost_no_total_score > genetic_degree_cost_score:
+                    log_important(text=f"Genetic Degree/Cost No First Total score performed better")
+                    genetic_degree_cost_score = genetic_degree_cost_no_total_score
+                    results[genetic_degree_cost_sim.name] = (epoch_scores, LINE_PURPLE)
+
+                break
+            except Exception as e:
+                log_important(text=f"Skipping Genetic Degree/Cost No First Total because of \"{e}\"")
+
+    log_important(text=f"\n{YELLOW}### STARTING GENETIC ###{RESET}")
+    genetic_sim = GeneticSimulation(
+        name="Genetic",
+        cost=cost,
+        n=n,
+        epochs=epochs,
+        nodes_threshold=nodes_threshold,
+        nodes_cost=nodes_cost,
+    )
+    _, genetic_score, epoch_scores = genetic_sim.run(graph_name)
+    results[genetic_sim.name] = (epoch_scores, LINE_BLUE)
+    log_important(text=f"Genetic score: {genetic_score}")
 
     log_important(text=f"\n{YELLOW}### STARTING DEGREE ###{RESET}")
     degree_sim = DegreeSimulation(
@@ -199,8 +214,10 @@ def load_options(options: Dict[Any, Any]):
         options (dict): Dictionary with options.
     """
     do_genetic_degree = False
+    do_genetic_degree_cost_no_first_total = False
 
     if options:
         do_genetic_degree = options.get("do_genetic_degree", False)
+        do_genetic_degree_cost_no_first_total = options.get("do_genetic_degree_cost_no_first_total", False)
 
-    return do_genetic_degree
+    return do_genetic_degree, do_genetic_degree_cost_no_first_total
