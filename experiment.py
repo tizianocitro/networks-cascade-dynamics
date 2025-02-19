@@ -28,13 +28,13 @@ def run_experiment(
         n (int): Number of nodes.
         options (dict): Dictionary with options.
     """
-    do_genetic_degree, do_genetic_degree_cost_no_first_total = load_options(options)
+    do_genetic_degree, do_genetic_degree_cost_no_first_total, thresholds_as_majority = load_options(options)
 
     results = {}
 
     log_important(text=f"\n{BLUE}### STARTING EXPERIMENT {exp_name} ###{RESET}")
 
-    nodes_threshold, nodes_cost = setup_graph(graph_name)
+    nodes_threshold, nodes_cost = setup_graph(graph_name, thresholds_as_majority)
 
     if do_genetic_degree:
         log_important(text=f"\n{YELLOW}### STARTING GENETIC DEGREE ###{RESET}")
@@ -187,21 +187,26 @@ def save_results(exp_name, graph_name, simulation_results):
     plt.close()
 
 
-def setup_graph(graph_name):
+def setup_graph(graph_name, thresholds_as_majority):
     """
     Setup graph for the experiment.
 
     Args:
         graph_name (str): Name of the graph.
+        thresholds_as_majority (bool): If True, use majority as threshold for nodes.
     """
     graph = graphs_by_name[graph_name]
     max_degree = get_max_degree(graph)
     log_important(text=f"\nUsing graph \"{graph_name}\" with max degree {max_degree}\n")
     print_graph_statistics(graph_name=graph_name)
 
-    nodes_threshold = generate_nodes_threshold_with_node_degrees(graph, graph.nodes)
+    if thresholds_as_majority:
+        nodes_threshold = generate_nodes_threshold_majority(graph, graph.nodes)
+    else:
+        nodes_threshold = generate_nodes_threshold_with_node_degrees(graph, graph.nodes)
+
     nodes_cost = generate_nodes_cost(graph.nodes)
-    log_important(text=f"Generated nodes threshold and cost for graph \"{graph_name}\"")
+    log_important(text=f"Generated nodes threshold and cost for graph \"{graph_name}\" using \"thresholds_as_majority={thresholds_as_majority}\"")
 
     return nodes_threshold, nodes_cost
 
@@ -215,9 +220,11 @@ def load_options(options: Dict[Any, Any]):
     """
     do_genetic_degree = False
     do_genetic_degree_cost_no_first_total = False
+    thresholds_as_majority = False
 
     if options:
         do_genetic_degree = options.get("do_genetic_degree", False)
         do_genetic_degree_cost_no_first_total = options.get("do_genetic_degree_cost_no_first_total", False)
+        thresholds_as_majority = options.get("thresholds_as_majority", False)
 
-    return do_genetic_degree, do_genetic_degree_cost_no_first_total
+    return do_genetic_degree, do_genetic_degree_cost_no_first_total, thresholds_as_majority

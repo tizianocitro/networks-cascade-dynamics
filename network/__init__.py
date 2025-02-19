@@ -9,6 +9,7 @@ from .graph import (
     print_nodes,
     generate_nodes_threshold,
     generate_nodes_threshold_with_node_degrees,
+    generate_nodes_threshold_majority,
     generate_nodes_cost,
     generate_nodes_influenced,
     get_max_degree,

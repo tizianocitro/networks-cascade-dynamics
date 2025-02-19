@@ -106,6 +106,18 @@ def generate_nodes_threshold_with_node_degrees(
     return nodes_threshold
 
 
+def generate_nodes_threshold_majority(graph, nodes, with_print=False):
+    nodes_threshold = {node: graph.degree(node) // 2 for node in nodes}
+
+    if with_print:
+        log(text="Nodes threshold:", enabled=with_print)
+        for node in nodes:
+            log(text=f"Node {node} has threshold {nodes_threshold[node]}", enabled=with_print)
+        log(enabled=with_print)
+
+    return nodes_threshold
+
+
 def generate_nodes_cost(nodes, min=1, max=100, with_print=False):
     nodes_cost = {node: randint(min, max) for node in nodes}
 
