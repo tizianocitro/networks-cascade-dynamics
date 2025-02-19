@@ -117,7 +117,7 @@ class DegreeCostSimulation:
             log(text=f"Starting seed set provided is {seed_set} with score {seed_set_score(seed_set.seed_set)}\n")
         if not self.starting_seed_set:
             log(text=f"No starting set provided: {self.starting_seed_set}")
-            log(text=f"Then, generating seed sets from (degree/cost) ordered graph given a cost of {self.cost}\n")
+            log(text=f"Then, generating seed set from (degree/cost) ordered graph given a cost of {self.cost}\n")
             seed_set, _ = seed_set_from_ordered_graph_given_cost(
                 nodes=graph.nodes,
                 nodes_cost_dict=self.nodes_cost,
