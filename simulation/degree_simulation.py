@@ -100,23 +100,30 @@ class DegreeCostSimulation:
         cost=0,
         nodes_threshold: Dict[Any, int]=None,
         nodes_cost: Dict[Any, int]=None,
+        starting_seed_set=None
     ):
         self.name = name
         self.cost = cost
         self.nodes_threshold = nodes_threshold
         self.nodes_cost = nodes_cost
+        self.starting_seed_set = starting_seed_set
 
 
     def run(self, graph_name="karate_club_graph"):
         graph = graphs_by_name[graph_name]
 
-        log(text=f"Generating seed sets from (degree/cost) ordered graph given a cost of {self.cost}\n")
-        seed_set, _ = seed_set_from_ordered_graph_given_cost(
-            nodes=graph.nodes,
-            nodes_cost_dict=self.nodes_cost,
-            key_func=lambda node: (graph.degree()[node] // self.nodes_cost[node]),
-            cost=self.cost,
-        )
+        seed_set = self.starting_seed_set
+        if seed_set:
+            log(text=f"Starting seed set provided is {seed_set} with score {seed_set_score(seed_set.seed_set)}\n")
+        if not self.starting_seed_set:
+            log(text=f"No starting set provided: {self.starting_seed_set}")
+            log(text=f"Then, generating seed sets from (degree/cost) ordered graph given a cost of {self.cost}\n")
+            seed_set, _ = seed_set_from_ordered_graph_given_cost(
+                nodes=graph.nodes,
+                nodes_cost_dict=self.nodes_cost,
+                key_func=lambda node: (graph.degree()[node] // self.nodes_cost[node]),
+                cost=self.cost,
+            )
 
         epoch_sets, epoch_score = self.run_epoch(
             graph=graph,

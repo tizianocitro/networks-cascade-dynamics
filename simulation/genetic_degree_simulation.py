@@ -2,7 +2,7 @@ from typing import Any, Dict
 from network import *
 from utils import *
 from heapq import *
-
+from copy import deepcopy
 
 class GeneticDegreeSimulation:
 
@@ -201,6 +201,7 @@ class GeneticDegreeCostSimulation:
         nodes_threshold: Dict[Any, int]=None,
         nodes_cost: Dict[Any, int]=None,
         with_first_total=True,
+        with_best_of_starting_population=False,
     ):
         self.name = name
         self.cost = cost
@@ -211,6 +212,8 @@ class GeneticDegreeCostSimulation:
         self.nodes_threshold = nodes_threshold
         self.nodes_cost = nodes_cost
         self.with_first_total = with_first_total
+        self.with_best_of_starting_population = with_best_of_starting_population
+        self.best_of_starting_population = None
 
 
     def run(self, graph_name="karate_club_graph"):
@@ -227,6 +230,10 @@ class GeneticDegreeCostSimulation:
             b_range=self.b_range,
             with_first_total=self.with_first_total,
         )
+
+        if self.with_best_of_starting_population:
+            self.best_of_starting_population = deepcopy(max(seed_sets, key=lambda s: seed_set_score(s.seed_set)))
+            log(text=f"Best seed set: {self.best_of_starting_population} with score {seed_set_score(self.best_of_starting_population.seed_set)}")
 
         max_score = 0
         epoch_scores = {0: 0}
@@ -248,7 +255,7 @@ class GeneticDegreeCostSimulation:
             log(text=f"Epoch {epoch} score: {score}")
         log()
 
-        return seed_sets, max_score, epoch_scores
+        return seed_sets, max_score, epoch_scores, self.best_of_starting_population
 
 
     def run_epoch(self, graph, seed_sets):

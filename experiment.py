@@ -28,7 +28,12 @@ def run_experiment(
         n (int): Number of nodes.
         options (dict): Dictionary with options.
     """
-    do_genetic_degree, do_genetic_degree_cost_no_first_total, thresholds_as_majority = load_options(options)
+    (
+        do_genetic_degree,
+        do_genetic_degree_cost_no_first_total,
+        thresholds_as_majority,
+        with_best_of_starting_population,
+    ) = load_options(options)
 
     results = {}
 
@@ -51,6 +56,7 @@ def run_experiment(
         results[genetic_degree_sim.name] = (epoch_scores, LINE_YELLOW)
         log_important(text=f"Genetic Degree score: {genetic_degree_score}")
 
+    best_of_starting_population = None
     log_important(text=f"\n{YELLOW}### STARTING GENETIC DEGREE/COST ###{RESET}")
     while True:
         try:
@@ -63,9 +69,13 @@ def run_experiment(
                 b_range=[0.1, 1],
                 nodes_threshold=nodes_threshold,
                 nodes_cost=nodes_cost,
+                with_best_of_starting_population=with_best_of_starting_population,
             )
-            _, genetic_degree_cost_score, epoch_scores = genetic_degree_cost_sim.run(graph_name)
+            _, genetic_degree_cost_score, epoch_scores, best = genetic_degree_cost_sim.run(graph_name)
             results[genetic_degree_cost_sim.name] = (epoch_scores, LINE_PURPLE)
+            if with_best_of_starting_population:
+                log_important(text=f"Using best of starting population as seed set: {best}")
+                best_of_starting_population = best
             log_important(text=f"Genetic Degree/Cost score: {genetic_degree_cost_score}")
 
             break
@@ -129,6 +139,7 @@ def run_experiment(
         cost=cost,
         nodes_threshold=nodes_threshold,
         nodes_cost=nodes_cost,
+        starting_seed_set=best_of_starting_population,
     )
     _, degree_cost_score = degree_cost_sim.run(graph_name)
     epoch_scores = {epoch: degree_cost_score for epoch in range(epochs)}
@@ -221,10 +232,17 @@ def load_options(options: Dict[Any, Any]):
     do_genetic_degree = False
     do_genetic_degree_cost_no_first_total = False
     thresholds_as_majority = False
+    with_best_of_starting_population = False
 
     if options:
         do_genetic_degree = options.get("do_genetic_degree", False)
         do_genetic_degree_cost_no_first_total = options.get("do_genetic_degree_cost_no_first_total", False)
         thresholds_as_majority = options.get("thresholds_as_majority", False)
+        with_best_of_starting_population = options.get("with_best_of_starting_population", False)
 
-    return do_genetic_degree, do_genetic_degree_cost_no_first_total, thresholds_as_majority
+    return (
+        do_genetic_degree,
+        do_genetic_degree_cost_no_first_total,
+        thresholds_as_majority,
+        with_best_of_starting_population,
+    )
