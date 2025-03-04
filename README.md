@@ -7,5 +7,5 @@ The main focus is on the problem of finding the most influential set of nodes in
 The **4 approaches**, which are later discussed in greater details, are:
 1. Degree.
 2. Degree / Cost.
-3. Genetic algorithm (random).
+3. Genetic (random) algorithm.
 4. Genetic Degree / Cost algorithm.
