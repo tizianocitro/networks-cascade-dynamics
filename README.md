@@ -82,11 +82,7 @@ Let:
 - **idxᵢ : V → N**: a function that maps each node **v** to its position in **Pᵢ(V)**.  
 
 The **function**:
-1. For each node **v** in **S₁** and **S₂**, computes the average score:  
-
-$id(v) = \frac{idx_1(v) + idx_2(v)}{2}$
-
-![equation](https://latex.codecogs.com/png.latex?id%28v%29%20%3D%20%5Cfrac%7Bidx_1%28v%29%20%2B%20idx_2%28v%29%7D%7B2%7D)
+1. For each node **v** in **S₁** and **S₂**, computes the average score: **$id(v) = \frac{idx_1(v) + idx_2(v)}{2}$**
 
 2. Constructs the permutation **P(V)** by adding nodes sorted in descending order of **id(v)**.  
 
