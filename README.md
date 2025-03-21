@@ -39,3 +39,12 @@ The seed set **S** is constructed as **S = { v₁, v₂, ..., vₖ }**, where **
 - ∑ᵢ₌₁ᵏ⁺¹ c(vᵢ) > b  
 
 Influence the network and compute **sc(S)**.
+
+## Approach 2: Degree / Cost
+
+The seed set **S** is constructed as **S = { v₁, v₂, ..., vₖ }**, where **vᵢ ∈ V** and **v₁, v₂, ..., vₖ** are the top **k** nodes in **V** sorted in descending order of **d(v) / c(v)** so that:
+
+- ∑ᵢ₌₁ᵏ c(vᵢ) ≤ b  
+- ∑ᵢ₌₁ᵏ⁺¹ c(vᵢ) > b  
+
+Influence the network and compute **sc(S)**.
