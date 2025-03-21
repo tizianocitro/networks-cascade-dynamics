@@ -82,8 +82,18 @@ Let:
 - **idxᵢ : V → N**: a function that maps each node **v** to its position in **Pᵢ(V)**.  
 
 The **function**:
-1. For each node **v** in **S₁** and **S₂**, computes the average score: **$id(v) = \frac{idx_1(v) + idx_2(v)}{2}$**
+1. For each node **v** in **S₁** and **S₂**, computes the average score **$id(v) = \frac{idx_1(v) + idx_2(v)}{2}$**
 
 2. Constructs the permutation **P(V)** by adding nodes sorted in descending order of **id(v)**.  
 
 3. Builds the output **S = { v₁, v₂, ..., vₖ }** by taking nodes from **P(V)** while **c(S) ≤ b**.
+
+## Approach 4: Genetic Degree / Cost
+
+This approach is **almost the same as the genetic approach**: the **main difference is the way the starting population and 25% random sets are generated**.
+
+The starting seed set **Sₗ** **l ∈ { 1, 2, ..., n }** is defined as **Sₗ = { v₁, v₂, ..., vₖ }**, where **vᵢ ∈ V** and:
+
+1. Each **Sₗ** is independently initialized from **P(V)**, where **P(V)** is a permutation of **V** built by sorting nodes in descending order of **$\frac{d(v) \cdot \alpha}{c(v) \cdot \beta}$** with **$\alpha, \beta ∈ (0, 1]$**.
+
+2. **v₁, v₂, ..., vₖ** are taken from **P(V)** while **c(Sₗ) ≤ b**.
