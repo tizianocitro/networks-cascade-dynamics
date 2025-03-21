@@ -70,3 +70,24 @@ During each **epoch eᵢ** where **i ∈ { 1, 2, ..., e }**:
     - **50% top performers**: Retain the top 50% of **Sₗ** from the current population based on their scores **sc(Sₗ)** in epoch **eᵢ**.  
     - **25% randomly generated**: 25% is generated using the same method as the initial seed sets generation.  
     - **25% combined sets**: 25% is generated using a combination function that combines the top 50% of **Sₗ** based on their scores **sc(Sₗ)** in epoch **eᵢ**.  
+
+### Combination function
+
+A 25% of the new population of epoch **eᵢ + 1** is generated using a combination function that:  
+- Takes as input (**S₁**, **S₂**).  
+- Produces **S** as output.  
+
+Let:  
+- **P₁(V)** and **P₂(V)** be the permutations from which **S₁** and **S₂** were generated.  
+- **idxᵢ : V → N**: a function that maps each node **v** to its position in **Pᵢ(V)**.  
+
+The **function**:
+1. For each node **v** in **S₁** and **S₂**, computes the average score:  
+
+\[
+id(v) = \frac{idx₁(v) + idx₂(v)}{2}
+\]
+
+2. Constructs the permutation **P(V)** by adding nodes sorted in descending order of **id(v)**.  
+
+3. Builds the output **S = { v₁, v₂, ..., vₖ }** by taking nodes from **P(V)** while **c(S) ≤ b**.
