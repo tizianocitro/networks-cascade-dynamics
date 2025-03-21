@@ -35,8 +35,8 @@ Let
 
 The seed set **S** is constructed as **S = { v₁, v₂, ..., vₖ }**, where **vᵢ ∈ V** and **v₁, v₂, ..., vₖ** are the top **k** nodes in **V** sorted in descending order of **d(v)** so that:
 
-- *∑ᵢ₌₁ᵏ c(vᵢ) ≤ b*
-- ∑ᵢ₌₁ᵏ⁺¹ c(vᵢ) > b  
+- $\sum_{i=1}^{k} c(v_i) \leq b$
+- $\sum_{i=1}^{k+1} c(v_i) > b$
 
 Influence the network and compute **sc(S)**.
 
@@ -44,7 +44,7 @@ Influence the network and compute **sc(S)**.
 
 The seed set **S** is constructed as **S = { v₁, v₂, ..., vₖ }**, where **vᵢ ∈ V** and **v₁, v₂, ..., vₖ** are the top **k** nodes in **V** sorted in descending order of **d(v) / c(v)** so that:
 
-- ∑ᵢ₌₁ᵏ c(vᵢ) ≤ b  
-- ∑ᵢ₌₁ᵏ⁺¹ c(vᵢ) > b  
+- $\sum_{i=1}^{k} \frac{d(v_i)}{c(v_i)} \leq b$  
+- $\sum_{i=1}^{k+1} \frac{d(v_i)}{c(v_i)} > b$
 
 Influence the network and compute **sc(S)**.
