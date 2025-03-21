@@ -48,3 +48,25 @@ The seed set **S** is constructed as **S = { v₁, v₂, ..., vₖ }**, where **
 - $\sum_{i=1}^{k+1} \frac{d(v_i)}{c(v_i)} > b$
 
 Influence the network and compute **sc(S)**.
+
+## Approach 3: Genetic (random)
+
+### Starting population
+
+This approach begins with a **starting population** of **n ∈ N** seed sets and runs for **e ∈ N** epochs.
+
+The starting seed set **Sₗ** for each **l ∈ {1, 2, ..., n}** is defined as **Sₗ = { v₁, v₂, ..., vₖ }**, where **vᵢ ∈ V** and:
+
+1. Each **Sₗ** is independently initialized from **P(V)**, where **P(V)** is a random permutation of **V**.
+2. **v₁, v₂, ..., vₖ** are taken from **P(V)** while **c(Sₗ) ≤ b**.
+
+### Epochs
+
+During each **epoch eᵢ** where **i ∈ { 1, 2, ..., e }**:  
+
+- Influence the network for each **Sₗ**, and compute **sc(Sₗ)**.  
+- Define the population for the epoch **eᵢ + 1** as:  
+
+    - **50% top performers**: Retain the top 50% of **Sₗ** from the current population based on their scores **sc(Sₗ)** in epoch **eᵢ**.  
+    - **25% randomly generated**: 25% is generated using the same method as the initial seed sets generation.  
+    - **25% combined sets**: 25% is generated using a combination function that combines the top 50% of **Sₗ** based on their scores **sc(Sₗ)** in epoch **eᵢ**.  
