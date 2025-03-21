@@ -9,3 +9,24 @@ The **4 approaches**, which are later discussed in greater details, are:
 2. Degree / Cost.
 3. Genetic (random) algorithm.
 4. Genetic Degree / Cost algorithm.
+
+## Prerequisites
+
+### Terminology
+
+**Cascade dynamics**: processes where an initial perturbation (such as a failure, activation, or influence spread) propagates through a network, triggering changes in connected nodes.
+
+**Cost networks**: networks where edges or nodes are associated with a cost, which can represent different factors, such as latency and economic cost.
+
+**Cascade dynamics ＋ cost networks**: when cascade dynamics occur in a cost network, the spread of failures or activations must be considered alongside costs.
+
+### Notation
+
+Let
+- \( G = (V, E) \): a graph where \( V \) is the set of nodes and \( E \) is the set of edges.
+- \( c: V→N \): a cost function that assigns a non-negative integer value \( c(v) ∈ { 1, 2, ..., 100 } \) to each node \( v ∈ V \).
+- \( t: V→N \): a threshold function that assigns a non-negative integer value \( t(v) ∈{ 1, 2, ..., d(v) } \) to each node \( v ∈ V \).
+- \( d(v) \): the degree of node \( v ∈ V \).
+- \( S \): the seed set \( S \) | \( |S| = k \).
+- \( b \): the cost budget for seed sets.
+- \( sc(S) \): the score of \( S \) in terms of the number of influenced nodes.
