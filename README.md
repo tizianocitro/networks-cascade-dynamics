@@ -92,7 +92,7 @@ The **function**:
 
 This approach is **almost the same as the genetic approach**: the **main difference is the way the starting population and 25% random sets are generated**.
 
-The starting seed set **Sₗ** **l ∈ { 1, 2, ..., n }** is defined as **Sₗ = { v₁, v₂, ..., vₖ }**, where **vᵢ ∈ V** and:
+The starting seed set **Sₗ** for each **l ∈ { 1, 2, ..., n }** is defined as **Sₗ = { v₁, v₂, ..., vₖ }**, where **vᵢ ∈ V** and:
 
 1. Each **Sₗ** is independently initialized from **P(V)**, where **P(V)** is a permutation of **V** built by sorting nodes in descending order of **$\frac{d(v) \cdot \alpha}{c(v) \cdot \beta}$** with **$\alpha, \beta ∈ (0, 1]$**.
 
