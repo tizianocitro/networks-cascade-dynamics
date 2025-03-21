@@ -23,10 +23,10 @@ The **4 approaches**, which are later discussed in greater details, are:
 ### Notation
 
 Let
-- \( G = (V, E) \): a graph where \( V \) is the set of nodes and \( E \) is the set of edges.
-- \( c: V→N \): a cost function that assigns a non-negative integer value \( c(v) ∈ { 1, 2, ..., 100 } \) to each node \( v ∈ V \).
-- \( t: V→N \): a threshold function that assigns a non-negative integer value \( t(v) ∈{ 1, 2, ..., d(v) } \) to each node \( v ∈ V \).
-- \( d(v) \): the degree of node \( v ∈ V \).
-- \( S \): the seed set \( S \) | \( |S| = k \).
-- \( b \): the cost budget for seed sets.
-- \( sc(S) \): the score of \( S \) in terms of the number of influenced nodes.
+- **G = (V, E)**: a graph where **V** is the set of nodes and **E** is the set of edges.
+- **c: V→N**: a cost function that assigns a non-negative integer value **c(v) ∈ { 1, 2, ..., 100 }** to each node **v ∈ V**.
+- **t: V→N**: a threshold function that assigns a non-negative integer value **t(v) ∈{ 1, 2, ..., d(v) }** to each node **v ∈ V**.
+- **d(v)**: the degree of node **v ∈ V**.
+- **S**: the seed set **S** | **|S| = k**.
+- **b**: the cost budget for seed sets.
+- **sc(S)**: the score of **S** in terms of the number of influenced nodes.
