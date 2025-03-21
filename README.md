@@ -30,3 +30,12 @@ Let
 - **S**: the seed set **S** | **|S| = k**.
 - **b**: the cost budget for seed sets.
 - **sc(S)**: the score of **S** in terms of the number of influenced nodes.
+
+## Approach 1: Degree
+
+The seed set **S** is constructed as **S = { v₁, v₂, ..., vₖ }**, where **vᵢ ∈ V** and **v₁, v₂, ..., vₖ** are the top **k** nodes in **V** sorted in descending order of **d(v)** so that:
+
+- *∑ᵢ₌₁ᵏ c(vᵢ) ≤ b*
+- ∑ᵢ₌₁ᵏ⁺¹ c(vᵢ) > b  
+
+Influence the network and compute **sc(S)**.
