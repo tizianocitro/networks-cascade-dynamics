@@ -25,7 +25,7 @@ The **4 approaches**, which are later discussed in greater details, are:
 Let
 - **G = (V, E)**: a graph where **V** is the set of nodes and **E** is the set of edges.
 - **c: V→N**: a cost function that assigns a non-negative integer value **c(v) ∈ { 1, 2, ..., 100 }** to each node **v ∈ V**.
-- **t: V→N**: a threshold function that assigns a non-negative integer value **t(v) ∈{ 1, 2, ..., d(v) }** to each node **v ∈ V**.
+- **t: V→N**: a threshold function that assigns a non-negative integer value **t(v) ∈ { 1, 2, ..., d(v) }** to each node **v ∈ V**.
 - **d(v)**: the degree of node **v ∈ V**.
 - **S**: the seed set **S** | **|S| = k**.
 - **b**: the cost budget for seed sets.
@@ -55,7 +55,7 @@ Influence the network and compute **sc(S)**.
 
 This approach begins with a **starting population** of **n ∈ N** seed sets and runs for **e ∈ N** epochs.
 
-The starting seed set **Sₗ** for each **l ∈ {1, 2, ..., n}** is defined as **Sₗ = { v₁, v₂, ..., vₖ }**, where **vᵢ ∈ V** and:
+The starting seed set **Sₗ** for each **l ∈ { 1, 2, ..., n }** is defined as **Sₗ = { v₁, v₂, ..., vₖ }**, where **vᵢ ∈ V** and:
 
 1. Each **Sₗ** is independently initialized from **P(V)**, where **P(V)** is a random permutation of **V**.
 2. **v₁, v₂, ..., vₖ** are taken from **P(V)** while **c(Sₗ) ≤ b**.
