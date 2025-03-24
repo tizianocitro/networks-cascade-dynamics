@@ -97,3 +97,28 @@ The starting seed set **Sₗ** for each **l ∈ { 1, 2, ..., n }** is defined as
 1. Each **Sₗ** is independently initialized from **P(V)**, where **P(V)** is a permutation of **V** built by sorting nodes in descending order of **$\frac{d(v) \cdot \alpha}{c(v) \cdot \beta}$** with **$\alpha, \beta ∈ (0, 1]$**.
 
 2. **v₁, v₂, ..., vₖ** are taken from **P(V)** while **c(Sₗ) ≤ b**.
+
+## Experiments
+
+Experiments are conducted with the following parameters:
+- Epochs **e = 50**.
+- Starting population **S = { S₁, …, Sₙ }** with **|S| = 20**.
+- Cost budget **b = 500**.
+
+Epochs is set to 50 because it is a reasonable number of epochs that allows for a good comparison between the approaches without taking too long to execute.
+- Above 50 epochs, there is still improvement over epochs but it happens slowly.
+
+## Results
+
+The most common shape of the results is that the **Genetic Degree / Cost** approach outperforms the other approaches in terms of the number of influenced nodes.
+
+The shape below is achieved on the **/data/email-eu-core** graph with the following stats:
+- |V|: 1005.
+- |E|: 16706.
+- ⍴(G): 0.0331.
+
+![Results](assets/results.png)
+
+Same results are achieved:
+- By using the threshold function **t: V→N | t(v) = d(v) / 2** (majority) for each **v ∈ V**.
+- When the best element from Genetic Degree/Cost starting population is used as the seed set for Degree/Cost.
